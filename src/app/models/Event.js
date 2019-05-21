@@ -1,4 +1,4 @@
-const mongoose = require('../database');
+const mongoose = require('../../database');
 
 const EventSchema = new mongoose.Schema({
   name: {
