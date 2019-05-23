@@ -5,8 +5,6 @@ const Event = require("../models/Event");
 
 const router = express.Router();
 
-// router.use(authMiddleware);
-
 router.get("/", async (req, res) => {
   try {
     const events = await Event.find();
