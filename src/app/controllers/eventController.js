@@ -27,7 +27,7 @@ router.get("/:eventId", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", authMiddleware, async (req, res) => {
   try {
     const event = await Event.create(req.body);
 
@@ -37,7 +37,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:eventId", async (req, res) => {
+router.put("/:eventId", authMiddleware, async (req, res) => {
   try {
     const event = await Event.findByIdAndUpdate(req.params.eventId, req.body, {
       new: true
@@ -49,7 +49,7 @@ router.put("/:eventId", async (req, res) => {
   }
 });
 
-router.delete("/:eventId", async (req, res) => {
+router.delete("/:eventId", authMiddleware, async (req, res) => {
   try {
     await Event.findByIdAndRemove(req.params.eventId);
 
