@@ -33,9 +33,36 @@ router.post(
   multer(multerConfig).single("file"),
   async (req, res) => {
     try {
-      const event = await Event.create(req.body);
+      const { originalname, size, filename: key } = req.file;
+      const {
+        name,
+        description,
+        date_start,
+        date_end,
+        organization_name,
+        email,
+        name_responsible,
+        latitude,
+        longitude
+      } = req.body;
 
-      return res.send({ event });
+      const event = await Event.create({
+        name,
+        description,
+        date_start,
+        date_end,
+        organization: {
+          name: organization_name,
+          email,
+          name_responsible
+        },
+        location: {
+          latitude,
+          longitude
+        }
+      });
+
+      return res.send(event);
     } catch (error) {
       return res.status(400).send({ error: "Error creating new Event" });
     }
