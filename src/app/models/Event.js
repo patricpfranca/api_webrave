@@ -6,7 +6,9 @@ const EventSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    image_url: String,
+    image_url: {
+      type: String
+    },
     organization: {
       name: {
         type: String,
@@ -43,6 +45,12 @@ const EventSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+EventSchema.pre("save", function() {
+  if (!this.image_url) {
+    this.image_url = `${process.env.APP_URL}/files/${req.file.filename}`;
+  }
+});
 
 const Event = mongoose.model("Event", EventSchema);
 

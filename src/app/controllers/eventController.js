@@ -33,7 +33,7 @@ router.post(
   multer(multerConfig).single("file"),
   async (req, res) => {
     try {
-      const { originalname, size, filename: key } = req.file;
+      const { filename: key, location: url = "" } = req.file;
       const {
         name,
         description,
@@ -48,6 +48,7 @@ router.post(
 
       const event = await Event.create({
         name,
+        image_url: url,
         description,
         date_start,
         date_end,
