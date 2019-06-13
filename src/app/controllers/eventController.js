@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const events = await Event.find();
+    const events = await Event.find({ active: true });
 
     return res.send({ events });
   } catch (error) {
