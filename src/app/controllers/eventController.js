@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
     const events = await Event.find(query).sort({ date_start: "asc" });
 
     if (events.length !== 0) {
-      return res.send({ events });
+      return res.status(200).send({ events });
     } else {
       return res.status(404).send({ message: "Event not found" });
     }
