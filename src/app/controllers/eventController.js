@@ -8,10 +8,21 @@ const Event = require("../models/Event");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  try {
-    const events = await Event.find({ active: true });
+  let query = { active: true };
+  let params = req.query;
 
-    return res.send({ events });
+  try {
+    if (req.query) {
+      query = { name: new RegExp(params.name, "i"), active: true };
+    }
+
+    const events = await Event.find(query).sort({ date_start: "asc" });
+
+    if (events.length !== 0) {
+      return res.send({ events });
+    } else {
+      return res.status(404).send({ message: "Event not found" });
+    }
   } catch (error) {
     return res.status(400).send({ error: "Error loading events" });
   }
