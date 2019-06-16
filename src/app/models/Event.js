@@ -4,7 +4,8 @@ const EventSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true
+      required: true,
+      index: true
     },
     image_url: {
       type: String
