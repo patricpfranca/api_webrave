@@ -8,6 +8,8 @@ const Event = require("../models/Event");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
+  let pages = parseInt(req.query.pages);
+  let size = parseInt(req.query.per_page);
   let query = { active: true };
   let params = req.query;
 
@@ -16,7 +18,10 @@ router.get("/", async (req, res) => {
       query = { name: new RegExp(params.name, "i"), active: true };
     }
 
-    const events = await Event.find(query).sort({ date_start: "asc" });
+    const events = await Event.find(query)
+      .sort({ date_start: "asc" })
+      .skip(pages > 0 ? (pages - 1) * size : 0)
+      .limit(size);
 
     if (events.length !== 0) {
       return res.status(200).send({ events });
