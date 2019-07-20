@@ -20,11 +20,11 @@ router.get("/", async (req, res) => {
 
     const events = await Event.find(query)
       .sort({ date_start: "asc" })
-      .skip(pages > 0 ? (pages - 1) * size : 0)
+      .skip(size * (pages - 1))
       .limit(size);
 
     if (events.length !== 0) {
-      return res.status(200).send({ events });
+      return res.status(200).send(events);
     } else {
       return res.status(404).send({ events, message: "Event not found" });
     }
@@ -37,7 +37,7 @@ router.get("/:eventId", async (req, res) => {
   try {
     const event = await Event.findById(req.params.eventId);
 
-    return res.send({ event });
+    return res.send(event);
   } catch (error) {
     return res.status(400).send({ error: "Error loading event" });
   }
@@ -92,7 +92,7 @@ router.put("/:eventId", authMiddleware, async (req, res) => {
       new: true
     });
 
-    return res.send({ event });
+    return res.send(event);
   } catch (error) {
     return res.status(400).send({ error: "Error updating Event" });
   }
