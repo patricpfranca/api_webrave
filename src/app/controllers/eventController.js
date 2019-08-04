@@ -13,24 +13,28 @@ router.get("/", async (req, res) => {
   let query = { active: true };
   let params = req.query;
 
-  try {
-    if (req.query) {
-      query = { name: new RegExp(params.name, "i"), active: true };
-    }
-
-    const events = await Event.find(query)
-      .sort({ date_start: "asc" })
-      .skip(size * (pages - 1))
-      .limit(size);
-
-    if (events.length !== 0) {
-      return res.status(200).send(events);
-    } else {
-      return res.status(404).send({ events, message: "Event not found" });
-    }
-  } catch (error) {
-    return res.status(400).send({ error: "Error loading events" });
+  // try {
+  if (req.query) {
+    query = { name: new RegExp(params.name, "i"), active: true };
   }
+
+  await Event.find(query)
+    .sort({ date_start: "asc" })
+    .skip(size * (pages - 1))
+    .limit(size)
+    .exec(function(err, events) {
+      if (events.length !== 0) {
+        Event.countDocuments().exec(function(err, count) {
+          res.status(200).send({
+            events: events,
+            current_page: pages,
+            total_pages: Math.ceil(count / size)
+          });
+        });
+      } else {
+        return res.status(404).send({ events, message: "Event not found!" });
+      }
+    });
 });
 
 router.get("/:eventId", async (req, res) => {
