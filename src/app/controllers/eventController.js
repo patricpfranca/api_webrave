@@ -13,11 +13,9 @@ router.get("/", async (req, res) => {
   let query = { active: true };
   let params = req.query;
 
-  // try {
   if (req.query) {
     query = { name: new RegExp(params.name, "i"), active: true };
   }
-
   await Event.find(query)
     .sort({ date_start: "asc" })
     .skip(size * (pages - 1))
@@ -106,7 +104,7 @@ router.delete("/:eventId", authMiddleware, async (req, res) => {
   try {
     await Event.findByIdAndRemove(req.params.eventId);
 
-    return res.send();
+    return res.status(204).send();
   } catch (error) {
     return res.status(400).send({ error: "Error deleting event" });
   }
