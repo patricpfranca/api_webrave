@@ -10,6 +10,7 @@ const EventSchema = new mongoose.Schema(
     image_url: {
       type: String
     },
+    categories: [String],
     organization: {
       name: {
         type: String,

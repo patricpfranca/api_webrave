@@ -11,11 +11,13 @@ router.get("/", async (req, res) => {
   let pages = parseInt(req.query.pages);
   let size = parseInt(req.query.per_page);
   let query = { active: true };
-  let params = req.query;
 
   if (req.query) {
-    query = { name: new RegExp(params.name, "i"), active: true };
+    for (const key in req.query) {
+      query = { [key]: new RegExp(req.query[key], "i"), active: true };
+    }
   }
+
   await Event.find(query)
     .sort({ date_start: "asc" })
     .skip(size * (pages - 1))
@@ -60,13 +62,14 @@ router.post(
         organization_name,
         email,
         name_responsible,
-        latitude,
-        longitude
+        location,
+        categories
       } = req.body;
 
       const event = await Event.create({
         name,
         image_url: url,
+        categories,
         description,
         date_start,
         date_end,
@@ -75,10 +78,7 @@ router.post(
           email,
           name_responsible
         },
-        location: {
-          latitude,
-          longitude
-        }
+        location
       });
 
       return res.send(event);
